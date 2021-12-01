@@ -3,7 +3,7 @@ import styles from "../styles/Home.module.css";
 import Code from "./Code";
 import Link from "next/link";
 
-function Snippets({ snippet, snippetDeleted }) {
+function Snippets({ snippet, snippetDeleted, email }) {
   const deleteSnippet = async () => {
     try {
       await fetch("/api/deleteSnippet", {
@@ -26,6 +26,16 @@ function Snippets({ snippet, snippetDeleted }) {
       <p className={styles.descp}>{snippet.data.description}</p>
 
       <Code snippet={snippet} />
+      {email == snippet.data.mail && (
+        <>
+          <div className={styles.links}>
+            <Link href={`/edit/${snippet.id}`}>
+              <a>Edit</a>
+            </Link>
+            <a onClick={deleteSnippet}>Delete</a>
+          </div>
+        </>
+      )}
 
       <div className={styles.links}>
         <Link href={`/edit/${snippet.id}`}>

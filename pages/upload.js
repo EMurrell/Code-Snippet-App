@@ -3,8 +3,10 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import style from "../styles/form.module.css";
 import { Link } from "next/link";
+import { getSession } from "next-auth/client";
 
-function upload({ snippet }) {
+function Upload({ snippet, user }) {
+  const email = user.email;
   const { register, handleSubmit, errors, reset } = useForm({
     defaultValues: {
       code: snippet ? snippet.data.code : "",
@@ -15,12 +17,18 @@ function upload({ snippet }) {
   });
   const router = useRouter();
   const createSnippet = async (data) => {
-    const { code, language, description, name } = data;
+    const { code, language, description, name, mail } = data;
     console.log(data);
     try {
       await fetch("/api/createSnippet", {
         method: "POST",
-        body: JSON.stringify({ code, language, description, name }),
+        body: JSON.stringify({
+          code,
+          language,
+          description,
+          name,
+          mail: email,
+        }),
         headers: {
           "Content-type": "application/json",
         },
@@ -36,7 +44,13 @@ function upload({ snippet }) {
     try {
       await fetch("/api/updateSnippet", {
         method: "PUT",
-        body: JSON.stringify({ code, language, description, name, id }),
+        body: JSON.stringify({
+          code,
+          language,
+          description,
+          name,
+          mail: email,
+        }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -112,4 +126,17 @@ function upload({ snippet }) {
     </div>
   );
 }
-export default upload;
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  if (!session) {
+    context.res.writeHead(302, { Location: "/" });
+    context.res.end();
+    return {};
+  }
+  return {
+    props: {
+      user: session.user,
+    },
+  };
+}
+export default Upload;

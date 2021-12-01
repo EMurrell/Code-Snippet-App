@@ -1,7 +1,7 @@
 import { createSnippet } from "../../Fauna";
 
 export default async function handler(req, res) {
-  const { code, language, description, name } = req.body;
+  const { code, language, description, name, mail } = req.body;
   if (req.method !== "POST") {
     return res.status(405).json({ msg: "unauthorized" });
   }
@@ -10,8 +10,10 @@ export default async function handler(req, res) {
       code,
       language,
       description,
-      name
+      name,
+      mail
     );
+
     return res.status(200).json(createdSnippet);
   } catch (error) {
     console.log(error);

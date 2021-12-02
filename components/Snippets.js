@@ -36,13 +36,6 @@ function Snippets({ snippet, snippetDeleted, email }) {
           </div>
         </>
       )}
-
-      <div className={styles.links}>
-        <Link href={`/edit/${snippet.id}`}>
-          <a>Edit</a>
-        </Link>
-        <a>Delete</a>
-      </div>
     </div>
   );
 }
